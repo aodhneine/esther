@@ -1,0 +1,8 @@
+cargo-features = ["edition2021"]
+
+[package]
+name = "esther"
+version = "0.1.0"
+edition = "2021"
+authors = ["Aodhnait Étaín <aodhneine@pm.me>"]
+license = "0BSD"
