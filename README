@@ -1,0 +1,4 @@
+esther is a work-in-progress, proof-of-concept automated theorem proof assistant
+based entirely on homotopy type theory (similar to [lean].)
+
+[lean]: https://github.com/leanprover/lean4
