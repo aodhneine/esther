@@ -1,7 +1,8 @@
 #[cfg(test)]
 mod tests {
+	use super::*;
+
 	#[test]
 	fn it_works() {
-		println!("it works!");
 	}
 }
