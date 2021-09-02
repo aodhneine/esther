@@ -1,3 +1,98 @@
+## Primer to type theory
+
+In this chapter we are going to present an overview of a logic and type theory
+that we are going to use for the "primary" implementation of Esther. Instead of
+jumping right into HoTT, we are first implementing system based on ETCS[1] /
+ZFC[2] / SEAR[3], along with a corresponding logic systems, that allows us to
+a) have much cleaner and simpler implementation, and b) be more intuitive and
+welcoming to new people.
+
+[1]: https://ncatlab.org/nlab/show/ETCS
+[2]: https://ncatlab.org/nlab/show/ZFC
+[3]: https://ncatlab.org/nlab/show/SEAR
+
+*Note*: For readers familiar with Homotopy Type Theory, we are going to use a
+version of type theory very similar to one used by HoTT.
+
+### Type theory in context of set theory
+
+Thanks to [propositions as types], we need not discern between propositions, a
+deductive "part" of the system, and types, the "constructional" part of the
+system. Instead, we can identify propositions with types, and regard the
+process of proving a theorem as *constructing an object*.
+
+[propositions as types]: https://ncatlab.org/nlab/show/propositions+as+types
+
+A basic expression of type theory is `a : A`, in other words, object `a` is of
+type `A`. Although it can seem similar to expression `a ∈ A` in set theory, the
+crucial difference that `a : A` is a *judgement*, and not merely a proposition.
+
+A judgement is a statement living in a metalanguage, as opposed to proposition,
+which lives in the object language of the deductive system.
+
+This means that, when working in set theory, we can not create propositions of
+form "if `a : A` then `b : B`", nor can we prove falseness of `a : A`.
+
+### Definitional equality
+
+We are going to make a distinction between a "definitional" equality, and a
+"propositional" one. As a matter of fact, we are not going to introduce the
+latter until later on, when we have a solid basis of understanding the
+framework we are working in.
+
+A *propositional equality* is a meta-concept, that is, it is not possible to
+define it inside the logic framework we are working in. Given two objects `p`
+and `q`, we say that they are *propositionally equal* if their definitions are
+equal.
+
+For example, given `p` of 2 and `q` of 1 + 1, we can say that `p` and `q` are
+propositionally equal. It can be expressed in notation as `p ≡ q`.
+
+*Note*: Readers familiar with type theory will notice that we include a notion
+of *computational* equality with definitional one. A reasoning for that can be
+found on nLab, under [equality#definitional_equality].
+
+[equality#definitional_equality]: https://ncatlab.org/nlab/show/equality#definitional_equality
+
+When introducing an definition using definitional equality, we are often going
+to use symbol `:≡`. Thus, the above definitions can be succinctly written as
+`p :≡ 2` and `q :≡ 1 + 1`.
+
+### Types
+
+...
+
+### Functions
+
+Unlike in ZFC, we are going to regard function types as primitive notion. That
+means that `f : A → B` means a function, or mapping, from type A to type B.
+
+Function can be defined using λ-abstraction, for example, assuming `f : N → N`,
+we can define `f` as:
+
+  f :≡ λ(x:N).x + x
+
+where `N` is the set of natural numbers (we are going to give a precise
+definition of `N` later on.)
+
+However, such style of definitions can get jarring quickly, and as such, we
+also introduce a second way, by a definition. Assuming the same function, we
+can write
+
+  f(x) :≡ x + x
+
+and both of these declarations are then definitionally equal.
+
+*Note*: Readers familiar with functional languages such as Haskell or Idris
+will notice that the second style is nothing more than definition by pattern
+matching. We will relate to that later.
+
+Another example of a function is a function that, for any type `A` and element
+`y : B`, we have a *constant function* `(λ(x:A).y) : A → B`. (We will refine
+this example later on when we talk about *dependent functions*.)
+
+---
+
 ## Type Theory Primer
 
 A short introduction to type theory as used throught the Homotopy Type Theory,

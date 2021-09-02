@@ -1,0 +1,2 @@
+-- line comment
+def double (n : nat) : nat := n + n
