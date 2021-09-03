@@ -1,7 +1,6 @@
-![esther logo](assets/logo.png)
+![Esther Logo](assets/logo.png)
 
 Esther is a work-in-progress, proof-of-concept automated theorem proof
-assistant based on homotopy type theory (similar to [Lean] and [Arend].)
+assistant based on [Homotopy Type Theory].
 
-[lean]: https://github.com/leanprover/lean4
-[arend]: https://github.com/JetBrains/Arend
+[Homotopy Type Theory]: https://homotopytypetheory.org/book/
