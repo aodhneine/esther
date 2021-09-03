@@ -109,7 +109,7 @@ impl<'a> Source<'a> {
 		return self.text.len() == self.offset;
 	} */
 
-	// Returns `true` if the given character is a “terminator”, i.e. a whitespace
+	// Returns true if the given character is a “terminator”, i.e. a whitespace
 	// or a special punctuation character.
 	fn is_terminator(c: char) -> bool {
 		return c.is_whitespace() || c == '.' || c == '(' || c == ')' || c == ':';
@@ -146,6 +146,8 @@ impl<'a> Source<'a> {
 								c => self.offset += c.len_utf8(),
 							};
 						};
+
+						// NOTE: We don't terminate here.
 					},
 					_ => todo!("‘-’ + everything else"),
 				},
@@ -159,7 +161,7 @@ impl<'a> Source<'a> {
 				c if c.is_whitespace() => self.offset += c.len_utf8(),
 				// Terminate the loop on EOF char (‘\0’).
 				Self::EOF => return None,
-				// Handle some punctuation.
+				// Handle some specific punctuation.
 				'(' | ')' => {
 					let start = self.offset;
 					self.offset += 1;
