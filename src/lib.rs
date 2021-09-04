@@ -91,6 +91,13 @@ impl<'a> Source<'a> {
 	// taking an approach similar to rustc_lexer, by only storing .chars iterator
 	// and working directly with it.
 
+	// We use \0 to mark end-of-file, which makes working witch characters easier
+	// but it doesn't mark the TRUE end of file, as it is returned in a case that
+	// Chars iterator fails to get the next character. This can happen either
+	// when we hit the end of file, or when the next character is not a proper
+	// UTF-8 character. This means that you can get EOF even though there are
+	// still bytes in the file. If you need to find the true end of file, you can
+	// use `is_eof` function.
 	const EOF: char = '\0';
 
 	fn get_char(&self) -> char {
