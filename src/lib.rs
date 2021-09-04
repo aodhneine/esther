@@ -161,13 +161,8 @@ impl<'a> Source<'a> {
 				c if c.is_whitespace() => self.offset += c.len_utf8(),
 				// Terminate the loop on EOF char (‘\0’).
 				Self::EOF => return None,
-				// Handle some specific punctuation.
-				'(' | ')' => {
-					let start = self.offset;
-					self.offset += 1;
-					return Some(Token::new(start as u32, self.offset as u32));
-				},
-				c => {
+				// Identifiers.
+				c if c.is_alphabetic() => {
 					let start = self.offset;
 					self.offset += c.len_utf8();
 
@@ -179,6 +174,11 @@ impl<'a> Source<'a> {
 						};
 					};
 
+					return Some(Token::new(start as u32, self.offset as u32));
+				},
+				c => {
+					let start = self.offset;
+					self.offset += c.len_utf8();
 					return Some(Token::new(start as u32, self.offset as u32));
 				},
 			};
