@@ -178,8 +178,8 @@ impl<'a> Source<'a> {
 
 					loop {
 						match self.get_char() {
-							Self::EOF => break,
 							c if Self::is_terminator(c) => break,
+							Self::EOF => break,
 							c => self.offset += c.len_utf8(),
 						};
 					};
