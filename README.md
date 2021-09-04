@@ -17,3 +17,9 @@ assistant based on [Homotopy Type Theory].
 [Agda]: https://github.com/agda/agda
 
 [clj-kondo]: https://github.com/clj-kondo/clj-kondo
+
+## Community
+
+**Matrix**: you can find us on Matrix on [#esther:matrix.org].
+
+[#esther:matrix.org]: https://app.element.io/#/room/#esther:matrix.org
