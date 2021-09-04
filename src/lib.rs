@@ -48,6 +48,9 @@ impl<'a> Token<'a> {
 	}
 }
 
+// TODO: Replace keeping an offset and string slice with Chars iterator, which
+// can do all that for us, for free.
+
 /// Represents a single source text.
 pub struct Source<'a> {
 	text: &'a str,
