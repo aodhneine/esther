@@ -74,7 +74,9 @@ mod unicode {
 	pub fn get_rune(s: &str, p: usize) -> Option<char> {
 		// SAFETY: We assume that p is a valid offset into a string. It is up to the
 		// caller to uphold that assumption.
-		return unsafe { s.get_unchecked(p..) }.chars().next();
+		return unsafe {
+			s.get_unchecked(p..)
+		}.chars().next();
 	}
 }
 
