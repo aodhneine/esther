@@ -159,7 +159,10 @@ impl<'a> Source<'a> {
 							};
 						};
 
-						// NOTE: We don't terminate here.
+						// Since comment is not a token, and we haven't parsed a token yet,
+						// we need to continue looping to hope for a token (or the end of
+						// file.)
+						continue;
 					},
 					_ => todo!("‘-’ + everything else"),
 				},
