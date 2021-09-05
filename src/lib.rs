@@ -219,6 +219,7 @@ pub mod syntax {
 	pub enum Node<'a> {
 		/// Empty node, used as a sentinel element.
 		None,
+		// TODO: Identifiers can be formed from more than one token?
 		/// Identifier.
 		Ident(crate::Token<'a>),
 	}
