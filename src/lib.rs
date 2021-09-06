@@ -232,10 +232,6 @@ mod tests {
 			};
 		};
 
-		let mut parser = parse::Parser::new(&tokens, &source);
-		debug!("{:?}", parser.parse_def());
-
-		// Check the final parser state. We can now get the syntax tree from it.
-		debug!("{:?}", parser);
+		debug!("{:?}", tokens.iter().map(|token| source.at_token(*token)).collect::<Vec<_>>());
 	}
 }
