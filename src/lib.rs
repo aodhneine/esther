@@ -48,6 +48,15 @@ impl<'a> Token<'a> {
 	}
 }
 
+impl core::convert::From<Token<'_>> for core::ops::Range<usize> {
+	fn from(value: Token<'_>) -> Self {
+		return Self {
+			start: value.start as usize,
+			end: value.end as usize,
+		};
+	}
+}
+
 // TODO: Replace keeping an offset and string slice with Chars iterator, which
 // can do all that for us, for free.
 
@@ -208,7 +217,7 @@ impl<'a> Source<'a> {
 		// source text, but represents an invalid offset, because the only place
 		// where we can construct such token is Source.next.
 		return unsafe {
-			self.text.get_unchecked(token.start as usize..token.end as usize)
+			self.text.get_unchecked(core::ops::Range::from(token))
 		};
 	}
 }
