@@ -231,7 +231,7 @@ mod tests {
 	#[test]
 	fn it_works() {
 		debug!("size_of(Token) = {:?}", core::mem::size_of::<Token<'_>>());
-		debug!("size_of(&'_ Token) = {:?}", core::mem::size_of::<&'_ Token<'_>>());
+		debug!("size_of(&Token) = {:?}", core::mem::size_of::<&Token<'_>>());
 
 		let source = std::fs::read_to_string("tests/1.est").expect("failed to open file");
 		let mut source = Src::new(&source);
