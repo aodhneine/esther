@@ -66,6 +66,7 @@ pub struct Src<'a> {
 	offset: usize,
 }
 
+#[allow(unused_macros)]
 macro_rules! debug {
 	($msg : expr) => {
 		std::eprintln!(core::concat!("\x1b[2m[dbg]\x1b[0m ", $msg))
@@ -228,7 +229,7 @@ mod tests {
 
 	#[test]
 	fn it_works() {
-		// debug!("size_of(Token) = {:?}", core::mem::size_of::<Token<'_>>());
+		debug!("size_of(Token) = {:?}", core::mem::size_of::<Token<'_>>());
 
 		let source = std::fs::read_to_string("tests/1.est").expect("failed to open file");
 		let mut source = Src::new(&source);
