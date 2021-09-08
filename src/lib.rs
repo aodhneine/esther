@@ -61,7 +61,7 @@ impl core::convert::From<Token<'_>> for core::ops::Range<usize> {
 // can do all that for us, for free.
 
 /// Represents a single source text.
-pub struct Source<'a> {
+pub struct Src<'a> {
 	text: &'a str,
 	offset: usize,
 }
@@ -89,7 +89,7 @@ mod unicode {
 	}
 }
 
-impl<'a> Source<'a> {
+impl<'a> Src<'a> {
 	/// Creates new representation of the source text.
 	pub fn new(text: &'a str) -> Self {
 		return Self {
@@ -136,7 +136,7 @@ impl<'a> Source<'a> {
 		return c.is_whitespace() || c == '.' || c == '(' || c == ')' || c == ':';
 	}
 
-	// TODO: Make Source.next return an error that describes what exactly went
+	// TODO: Make Src.next return an error that describes what exactly went
 	// wrong. Maybe we could do something like Lean parser does — that would
 	// require using parser combinators instead.
 
@@ -215,7 +215,7 @@ impl<'a> Source<'a> {
 		// SAFETY: Each token contains information about the associated lifetime,
 		// as such it's impossible to create a token which refers to the given
 		// source text, but represents an invalid offset, because the only place
-		// where we can construct such token is Source.next.
+		// where we can construct such token is Src.next.
 		return unsafe {
 			self.text.get_unchecked(core::ops::Range::from(token))
 		};
@@ -231,7 +231,7 @@ mod tests {
 		// debug!("size_of(Token) = {:?}", core::mem::size_of::<Token<'_>>());
 
 		let source = std::fs::read_to_string("tests/1.est").expect("failed to open file");
-		let mut source = Source::new(&source);
+		let mut source = Src::new(&source);
 		let mut tokens = Vec::new();
 
 		loop {
