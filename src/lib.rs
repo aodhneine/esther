@@ -213,13 +213,13 @@ impl<'a> Src<'a> {
 
 	/// Returns the underlying text for the given token.
 	#[inline]
-	pub fn at_token(&self, token: Token<'a>) -> &'a str {
+	pub fn at_token(&self, token: &Token<'a>) -> &'a str {
 		// SAFETY: Each token contains information about the associated lifetime,
 		// as such it's impossible to create a token which refers to the given
 		// source text, but represents an invalid offset, because the only place
 		// where we can construct such token is Src.next.
 		return unsafe {
-			self.text.get_unchecked(core::ops::Range::from(token))
+			self.text.get_unchecked(core::ops::Range::from(*token))
 		};
 	}
 }
@@ -231,6 +231,7 @@ mod tests {
 	#[test]
 	fn it_works() {
 		debug!("size_of(Token) = {:?}", core::mem::size_of::<Token<'_>>());
+		debug!("size_of(&'_ Token) = {:?}", core::mem::size_of::<&'_ Token<'_>>());
 
 		let source = std::fs::read_to_string("tests/1.est").expect("failed to open file");
 		let mut source = Src::new(&source);
@@ -243,6 +244,6 @@ mod tests {
 			};
 		};
 
-		debug!("{:?}", tokens.iter().map(|token| source.at_token(*token)).collect::<Vec<_>>());
+		debug!("{:?}", tokens.iter().map(|token| source.at_token(token)).collect::<Vec<_>>());
 	}
 }
