@@ -77,6 +77,7 @@ macro_rules! debug {
 	};
 }
 
+// Internal module with utilities for working with UTF-8 encoded strings.
 mod unicode {
 	/// Returns either the next rune (UTF-8 code point), or None, if there is no
 	/// characters left in `s`.
