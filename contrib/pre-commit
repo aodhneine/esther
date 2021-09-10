@@ -18,7 +18,7 @@ if [ "$allownocommit" != "true" ] &&
 then
 	printf "$(tput setaf 1)error: Attempt to add a file with @nocommit pragma.\n"
 	printf "error: If you know what you are doing you can disable this check using:\n"
-  printf "    git config hooks.allownocommit true$(tput sgr0)\n"
+	printf "    git config hooks.allownocommit true$(tput sgr0)\n"
 
 	exit 1
 fi
