@@ -14,7 +14,7 @@ allownocommit=$(git config --type=bool hooks.allownocommit)
 exec 1>&2
 
 if [ "$allownocommit" != "true" ] &&
-	test $(git diff --cached --name-only | xargs grep '@nocommit' | wc -l) != 0
+	test $(git diff --cached | grep '@nocommit' | wc -l) != 0
 then
 	printf "$(tput setaf 1)error: Attempt to add a file with @nocommit pragma.\n"
 	printf "error: If you know what you are doing you can disable this check using:\n"
