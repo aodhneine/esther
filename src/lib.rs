@@ -267,6 +267,29 @@ impl Parser<'_> {
 	}
 }
 
+fn get_token_position_in_source<'a>(source: &Src<'a>, token: &Token<'a>) -> (u32, u32) {
+	let mut line = 1;
+	let mut column = 1;
+	let mut iter = source.text.chars().zip(0..);
+
+	while let Some((c, i)) = iter.next() {
+		if i == token.start {
+			break;
+		}
+
+		column += 1;
+
+		if c == '\n' {
+			column = 1;
+			line += 1;
+			continue;
+		}
+
+	};
+
+	return (line, column);
+}
+
 #[cfg(test)]
 mod tests {
 	use super::*;
@@ -282,7 +305,12 @@ mod tests {
 
 		loop {
 			match source.next() {
-				Some(token) => tokens.push(token),
+				Some(token) => {
+					let (line, column) = get_token_position_in_source(&source, &token);
+					debug!("line {}, column {}", line, column);
+
+					tokens.push(token);
+				},
 				None => break,
 			};
 		};
