@@ -1,4 +1,4 @@
-<img width="400px" src="assets/logo.png" alt="Esther logo">
+<img src="assets/logo.png" alt="Esther logo">
 
 Esther is a work-in-progress, proof-of-concept automated theorem proof
 assistant based on [Homotopy Type Theory].
