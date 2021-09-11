@@ -1,4 +1,4 @@
-<img width="400px" src="assets/esther.svg">
+<img width="400px" src="assets/esther.png">
 <!-- ![Esther Logo](assets/logo.png) -->
 
 Esther is a work-in-progress, proof-of-concept automated theorem proof
