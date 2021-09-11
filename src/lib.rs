@@ -315,6 +315,8 @@ mod tests {
 				Some(token) => {
 					let (line, column) = get_token_position_in_source(&source, &token);
 					debug!("line {}, column {}", line, column);
+					// We need to translate the line we got into an offset into the iter.
+					debug!("{:?}", source.text.lines().nth(line as usize - 1));
 
 					tokens.push(token);
 				},
