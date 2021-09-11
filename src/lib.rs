@@ -268,9 +268,17 @@ impl Parser<'_> {
 }
 
 fn get_token_position_in_source<'a>(source: &Src<'a>, token: &Token<'a>) -> (u32, u32) {
+	// A Unicode newline. Because I don't like how b'\n' looks like in the source
+	// code.
+	const NEWLINE: u8 = 0xa;
+
 	let mut line = 1;
 	let mut column = 1;
-	let mut iter = source.text.chars().zip(0..);
+	let mut iter = source.text
+		.as_bytes()
+		.iter()
+		.cloned()
+		.zip(0..);
 
 	while let Some((c, i)) = iter.next() {
 		if i == token.start {
@@ -279,12 +287,11 @@ fn get_token_position_in_source<'a>(source: &Src<'a>, token: &Token<'a>) -> (u32
 
 		column += 1;
 
-		if c == '\n' {
+		if c == NEWLINE {
 			column = 1;
 			line += 1;
 			continue;
 		}
-
 	};
 
 	return (line, column);
