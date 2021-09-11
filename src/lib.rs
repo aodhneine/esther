@@ -60,7 +60,7 @@ impl core::convert::From<Token<'_>> for core::ops::Range<usize> {
 // TODO: Replace keeping an offset and string slice with Chars iterator, which
 // can do all that for us, for free.
 
-/// Represents a single source text.
+/// Single source code without any other associated information.
 pub struct Src<'a> {
 	text: &'a str,
 	offset: usize,
@@ -224,6 +224,49 @@ impl<'a> Src<'a> {
 	}
 }
 
+// We want a separate struct to be able to keep information about a) the parser
+// state, and b) the tokens we are working with.
+/// A parsing context.
+pub struct Parser<'a> {
+	tokens: &'a [Token<'a>],
+	source: &'a Src<'a>,
+}
+
+impl<'a> Parser<'a> {
+	/// Constructs a new parser instance, [`Parser`].
+	pub fn new(tokens: &'a [Token<'a>], source: &'a Src<'a>) -> Self {
+		return Self {
+			tokens,
+			source,
+		};
+	}
+
+	fn has_token(&self, expected: &str) -> bool {
+		let token = unsafe {
+			self.tokens.get_unchecked(0)
+		};
+
+		return self.source.at_token(token) == expected;
+	}
+
+	fn advance(&mut self) {
+		self.tokens = unsafe {
+			self.tokens.get_unchecked(1..)
+		};
+	}
+}
+
+impl Parser<'_> {
+	// 'def' ident '(' arg_list ')' ':' type ':=' body
+	fn parse_def(&mut self) {
+		if self.has_token("def") {
+			self.advance();
+		}
+
+		// Return an error...
+	}
+}
+
 #[cfg(test)]
 mod tests {
 	use super::*;
@@ -245,5 +288,8 @@ mod tests {
 		};
 
 		debug!("{:?}", tokens.iter().map(|token| source.at_token(token)).collect::<Vec<_>>());
+
+		let mut parser = Parser::new(tokens.as_slice(), &source);
+		debug!("{:?}", parser.parse_def());
 	}
 }
