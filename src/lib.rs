@@ -229,6 +229,37 @@ impl<'a> Src<'a> {
 			self.text.get_unchecked(core::ops::Range::from(*token))
 		};
 	}
+
+	/// Return a line, column pair for a given token.
+	fn position_at_token(&self, token: &Token<'a>) -> (u32, u32) {
+		// A Unicode newline. Because I don't like how b'\n' looks like in the source
+		// code.
+		const NEWLINE: u8 = 0xa;
+
+		let mut line = 1;
+		let mut column = 1;
+		let mut iter = self.text
+			.as_bytes()
+			.iter()
+			.cloned()
+			.zip(0..);
+
+		while let Some((c, i)) = iter.next() {
+			if i == token.start {
+				break;
+			}
+
+			column += 1;
+
+			if c == NEWLINE {
+				column = 1;
+				line += 1;
+				continue;
+			}
+		};
+
+		return (line, column);
+	}
 }
 
 // We want a separate struct to be able to keep information about a) the parser
@@ -274,35 +305,6 @@ impl Parser<'_> {
 	}
 }
 
-fn get_token_position_in_source<'a>(source: &Src<'a>, token: &Token<'a>) -> (u32, u32) {
-	// A Unicode newline. Because I don't like how b'\n' looks like in the source
-	// code.
-	const NEWLINE: u8 = 0xa;
-
-	let mut line = 1;
-	let mut column = 1;
-	let mut iter = source.text
-		.as_bytes()
-		.iter()
-		.cloned()
-		.zip(0..);
-
-	while let Some((c, i)) = iter.next() {
-		if i == token.start {
-			break;
-		}
-
-		column += 1;
-
-		if c == NEWLINE {
-			column = 1;
-			line += 1;
-			continue;
-		}
-	};
-
-	return (line, column);
-}
 
 // @todo We need a proper test harness for the lexer and parser.
 
@@ -322,7 +324,7 @@ mod tests {
 		loop {
 			match source.next() {
 				Some(token) => {
-					let (line, column) = get_token_position_in_source(&source, &token);
+					let (line, column) = source.position_at_token(&token);
 					debug!("line {}, column {}", line, column);
 					// We need to translate the line we got into an offset into the iter.
 					debug!("{:?}", source.text.lines().nth(line as usize - 1));
