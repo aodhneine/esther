@@ -64,6 +64,7 @@ impl core::convert::From<Token<'_>> for core::ops::Range<usize> {
 pub struct Src<'a> {
 	text: &'a str,
 	offset: usize,
+	eof: bool,
 }
 
 #[allow(unused_macros)]
@@ -97,6 +98,7 @@ impl<'a> Src<'a> {
 		return Self {
 			text,
 			offset: 0,
+			eof: false,
 		};
 	}
 
@@ -185,8 +187,13 @@ impl<'a> Src<'a> {
 				},
 				// Skip all whitespace.
 				c if c.is_whitespace() => self.offset += c.len_utf8(),
-				// Terminate the loop on EOF char (‘\0’).
-				Self::EOF => return None,
+				// Terminate the loop on EOF char (‘\0’), but only if we returned an EOF
+				// token before.
+				Self::EOF if self.eof => return None,
+				Self::EOF => {
+					self.eof = true;
+					return Some(Token::new(self.offset as u32, self.offset as u32));
+				},
 				// Identifiers.
 				c if c.is_alphabetic() => {
 					let start = self.offset;
@@ -297,6 +304,8 @@ fn get_token_position_in_source<'a>(source: &Src<'a>, token: &Token<'a>) -> (u32
 	return (line, column);
 }
 
+// @todo We need a proper test harness for the lexer and parser.
+
 #[cfg(test)]
 mod tests {
 	use super::*;
@@ -326,7 +335,7 @@ mod tests {
 
 		debug!("{:?}", tokens.iter().map(|token| source.at_token(token)).collect::<Vec<_>>());
 
-		let mut parser = Parser::new(tokens.as_slice(), &source);
+		let mut parser = Parser::new(&tokens, &source);
 		debug!("{:?}", parser.parse_def());
 	}
 }
