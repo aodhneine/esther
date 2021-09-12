@@ -187,7 +187,7 @@ impl<'a> Src<'a> {
 				},
 				// Skip all whitespace.
 				c if c.is_whitespace() => self.offset += c.len_utf8(),
-				// Terminate the loop on EOF char (‘\0’), but only if we returned an EOF
+				// Terminate the loop on EOF char (‘\0’) only if we returned an EOF
 				// token before.
 				Self::EOF if self.eof => return None,
 				Self::EOF => {
