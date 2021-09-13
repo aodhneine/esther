@@ -277,6 +277,7 @@ impl<'a> Parser<'a> {
 		};
 	}
 
+	/// Returns `true` if the next token is equal to `expected`.
 	#[inline]
 	fn has_token(&self, expected: &str) -> bool {
 		let token = unsafe {
@@ -286,6 +287,7 @@ impl<'a> Parser<'a> {
 		return self.source.at_token(token) == expected;
 	}
 
+	/// Advances the parser by one token.
 	#[inline]
 	fn advance(&mut self) {
 		self.tokens = unsafe {
@@ -293,6 +295,8 @@ impl<'a> Parser<'a> {
 		};
 	}
 
+	/// Advances the parser if the next token is equal to `expected`, or fails
+	/// with error code 1.
 	fn expect_token(&mut self, expected: &str) {
 		if !self.has_token(expected) {
 			let token = unsafe {
