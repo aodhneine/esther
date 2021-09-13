@@ -285,19 +285,84 @@ impl<'a> Parser<'a> {
 			self.tokens.get_unchecked(1..)
 		};
 	}
-}
 
-impl Parser<'_> {
-	// 'def' ident '(' arg_list ')' ':' type ':=' body
-	fn parse_def(&mut self) {
-		if self.has_token("def") {
-			self.advance();
+	fn expect_token(&mut self, expected: &str) {
+		if !self.has_token(expected) {
+			let token = unsafe {
+				self.tokens.get_unchecked(0)
+			};
+
+			eprintln!("\x1b[1;31merror:\x1b[0m expected {:?}, found {:?}", expected, self.source.at_token(token));
+			std::process::exit(1);
 		}
 
-		// Return an error...
+		self.advance();
+	}
+
+	// @todo This is very contrived, is there a better way to implement it? We
+	// would like to have a way to expect multiple tokens at once, but with only
+	// one function call...
+	fn expect_compound_token(&mut self, expected: &str) {
+		let mut token = unsafe {
+			self.tokens.get_unchecked(0)
+		};
+
+		let mut rest = expected;
+
+		loop {
+			if self.source.at_token(token).len() == rest.len() {
+				self.advance();
+				return;
+			}
+
+			if matches!(rest.find(self.source.at_token(token)), Some(0)) {
+				rest = unsafe {
+					rest.get_unchecked(self.source.at_token(token).len()..)
+				};
+
+				self.advance();
+
+				token = unsafe {
+					self.tokens.get_unchecked(0)
+				};
+
+				continue;
+			}
+
+			eprintln!("\x1b[1;31merror:\x1b[0m expected {:?}, found {:?}", expected, self.source.at_token(token));
+			std::process::exit(1);
+		};
 	}
 }
 
+/// Represents a function definition.
+#[derive(Debug)]
+pub struct FunctionDefinition;
+
+impl Parser<'_> {
+	// 'def' ident '(' arg_list ')' ':' type ':=' body
+	/// Tries to parse a function definition from the token stream.
+	pub fn parse_def(&mut self) -> Option<FunctionDefinition> {
+		if self.has_token("def") {
+			self.advance();
+
+			// Parse identifier.
+
+			// Parse argument list.
+			self.expect_token("(");
+			self.expect_token(")");
+
+			// Parse return type.
+
+			self.expect_compound_token(":=");
+
+			return Some(FunctionDefinition);
+		}
+
+		// Return an error...
+		return None;
+	}
+}
 
 // @todo We need a proper test harness for the lexer and parser.
 
