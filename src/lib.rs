@@ -427,13 +427,25 @@ mod tests {
 					let (line, column) = source.position_at_token(&token);
 					debug!("line {}, column {}", line, column);
 
-					// We need to translate the line we got into an offset into the iter.
+					// Now we need to get the token offset into the line string slice in
+					// the source. Here we are using custom implementation instead of
+					// built-in .lines().nth(line). This should be faster, since we don't
+					// need to iterate the entire string to look for newline characters,
+					// only offsets from the and to the current token.
 
-					// @todo We could make it possibly faster by instead starting from an
-					// start offset, and looking forward and backwards for new lines, and
-					// choosing that as a line.
+					let middle_line = unsafe {
+						source.text.get_unchecked(token.start as usize..)
+					};
 
-					debug!("{:?}", source.text.lines().nth(line as usize - 1));
+					let start = unsafe {
+						source.text.get_unchecked(..token.start as usize)
+					}.rfind('\n').map(|s| s + 1).unwrap_or(0);
+
+					let end = middle_line.find('\n').unwrap_or(middle_line.len());
+
+					debug!("{:?}", unsafe {
+						source.text.get_unchecked(start..token.start as usize + end)
+					});
 
 					tokens.push(token);
 				},
