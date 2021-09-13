@@ -29,6 +29,7 @@ pub struct Token<'a> {
 // We need custom Debug implementation for Token to avoid exposing its internal
 // fields (such as `_source`.)
 impl core::fmt::Debug for Token<'_> {
+	#[inline]
 	fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
 		return f.debug_struct("Token")
 			.field("start", &self.start)
@@ -49,6 +50,7 @@ impl<'a> Token<'a> {
 }
 
 impl core::convert::From<Token<'_>> for core::ops::Range<usize> {
+	#[inline]
 	fn from(value: Token<'_>) -> Self {
 		return Self {
 			start: value.start as usize,
@@ -113,10 +115,12 @@ impl<'a> Src<'a> {
 	// use `is_eof` function.
 	const EOF: char = '\0';
 
+	#[inline]
 	fn get_char(&self) -> char {
 		return unicode::get_rune(self.text, self.offset).unwrap_or(Self::EOF);
 	}
 
+	#[inline]
 	fn peek_char(&self) -> char {
 		let i = match unicode::get_rune(self.text, self.offset) {
 			Some(c) => c.len_utf8(),
@@ -134,6 +138,7 @@ impl<'a> Src<'a> {
 
 	// Returns true if the given character is a “terminator”, i.e. a whitespace
 	// or a special punctuation character.
+	#[inline]
 	fn is_terminator(c: char) -> bool {
 		return c.is_whitespace() || c == '.' || c == '(' || c == ')' || c == ':';
 	}
@@ -272,6 +277,7 @@ impl<'a> Parser<'a> {
 		};
 	}
 
+	#[inline]
 	fn has_token(&self, expected: &str) -> bool {
 		let token = unsafe {
 			self.tokens.get_unchecked(0)
@@ -280,6 +286,7 @@ impl<'a> Parser<'a> {
 		return self.source.at_token(token) == expected;
 	}
 
+	#[inline]
 	fn advance(&mut self) {
 		self.tokens = unsafe {
 			self.tokens.get_unchecked(1..)
