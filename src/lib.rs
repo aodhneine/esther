@@ -354,14 +354,45 @@ impl Parser<'_> {
 			self.advance();
 
 			// Parse identifier.
+			let _ident = unsafe {
+				self.tokens.get_unchecked(0)
+			};
+
+			self.advance();
+
+			// @todo Currently we assume that identifier is a single token, but there
+			// are cases when it can be more, such as when declaring methods or name-
+			// spaced functions (i.e. String.get).
 
 			// Parse argument list.
 			self.expect_token("(");
+
+			loop {
+				if self.has_token(")") {
+					break;
+				}
+
+				self.advance();
+				self.expect_token(":");
+				self.advance();
+			};
+
 			self.expect_token(")");
+			self.expect_token(":");
 
 			// Parse return type.
+			let _return_ty = unsafe {
+				self.tokens.get_unchecked(0)
+			};
+
+			self.advance();
+
+			// @todo Same thing here, currently we only use the first token as the
+			// return type.
 
 			self.expect_compound_token(":=");
+
+			// Parse function body.
 
 			return Some(FunctionDefinition);
 		}
