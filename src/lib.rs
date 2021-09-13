@@ -64,7 +64,6 @@ impl core::convert::From<Token<'_>> for core::ops::Range<usize> {
 pub struct Src<'a> {
 	text: &'a str,
 	offset: usize,
-	eof: bool,
 }
 
 #[allow(unused_macros)]
@@ -98,7 +97,6 @@ impl<'a> Src<'a> {
 		return Self {
 			text,
 			offset: 0,
-			eof: false,
 		};
 	}
 
@@ -187,13 +185,8 @@ impl<'a> Src<'a> {
 				},
 				// Skip all whitespace.
 				c if c.is_whitespace() => self.offset += c.len_utf8(),
-				// Terminate the loop on EOF char (‘\0’) only if we returned an EOF
-				// token before.
-				Self::EOF if self.eof => return None,
-				Self::EOF => {
-					self.eof = true;
-					return Some(Token::new(self.offset as u32, self.offset as u32));
-				},
+				// Terminate the loop on EOF char (‘\0’).
+				Self::EOF => return None,
 				// Identifiers.
 				c if c.is_alphabetic() => {
 					let start = self.offset;
