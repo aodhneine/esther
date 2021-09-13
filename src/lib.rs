@@ -384,7 +384,13 @@ mod tests {
 				Some(token) => {
 					let (line, column) = source.position_at_token(&token);
 					debug!("line {}, column {}", line, column);
+
 					// We need to translate the line we got into an offset into the iter.
+
+					// @todo We could make it possibly faster by instead starting from an
+					// start offset, and looking forward and backwards for new lines, and
+					// choosing that as a line.
+
 					debug!("{:?}", source.text.lines().nth(line as usize - 1));
 
 					tokens.push(token);
