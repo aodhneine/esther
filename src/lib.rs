@@ -406,6 +406,28 @@ impl Parser<'_> {
 	}
 }
 
+fn get_line_slice_from_token<'a>(source: &Src<'a>, token: &Token<'a>) -> &'a str {
+	// Now we need to get the token offset into the line string slice in
+	// the source. Here we are using custom implementation instead of
+	// built-in .lines().nth(line). This should be faster, since we don't
+	// need to iterate the entire string to look for newline characters,
+	// only offsets from the and to the current token.
+
+	let middle_line = unsafe {
+		source.text.get_unchecked(token.start as usize..)
+	};
+
+	let start = unsafe {
+		source.text.get_unchecked(..token.start as usize)
+	}.rfind('\n').map(|s| s + 1).unwrap_or(0);
+
+	let end = middle_line.find('\n').unwrap_or(middle_line.len());
+
+	return unsafe {
+		source.text.get_unchecked(start..token.start as usize + end)
+	};
+}
+
 // @todo We need a proper test harness for the lexer and parser.
 
 #[cfg(test)]
@@ -426,26 +448,7 @@ mod tests {
 				Some(token) => {
 					let (line, column) = source.position_at_token(&token);
 					debug!("line {}, column {}", line, column);
-
-					// Now we need to get the token offset into the line string slice in
-					// the source. Here we are using custom implementation instead of
-					// built-in .lines().nth(line). This should be faster, since we don't
-					// need to iterate the entire string to look for newline characters,
-					// only offsets from the and to the current token.
-
-					let middle_line = unsafe {
-						source.text.get_unchecked(token.start as usize..)
-					};
-
-					let start = unsafe {
-						source.text.get_unchecked(..token.start as usize)
-					}.rfind('\n').map(|s| s + 1).unwrap_or(0);
-
-					let end = middle_line.find('\n').unwrap_or(middle_line.len());
-
-					debug!("{:?}", unsafe {
-						source.text.get_unchecked(start..token.start as usize + end)
-					});
+					debug!("{:?}", get_line_slice_from_token(&source, &token));
 
 					tokens.push(token);
 				},
